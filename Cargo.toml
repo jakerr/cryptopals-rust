@@ -1,0 +1,4 @@
+[package]
+name = "cryptopals"
+version = "0.1.0"
+authors = ["Jake Kerr <kodafox@gmail.com>"]
