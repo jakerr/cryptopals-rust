@@ -1,1 +1,1 @@
-pub mod challenge4;
+pub mod c04_single_char_xor;

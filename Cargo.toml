@@ -5,4 +5,4 @@ authors = ["Jake Kerr <kodafox@gmail.com>"]
 
 [[bin]]
 name = "xor"
-path = "src/challenges/05_repeating_key_xor.rs"
+path = "src/challenges/c05_repeating_key_xor.rs"
