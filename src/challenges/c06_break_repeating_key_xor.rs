@@ -24,5 +24,6 @@ fn test_break_reapeating_key_xor() {
             best_message = (score, msg_string);
         }
     }
-    assert!(best_message.1.starts_with("I'm back and I'm ringin' the bell"))
+    println!("{}", best_message.1);
+    assert!(best_message.1.starts_with("I'm back and I'm ringin' the bell"));
 }
