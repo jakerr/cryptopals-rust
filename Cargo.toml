@@ -6,3 +6,6 @@ authors = ["Jake Kerr <kodafox@gmail.com>"]
 [[bin]]
 name = "xor"
 path = "src/challenges/c05_repeating_key_xor.rs"
+
+[dependencies]
+openssl = "*"

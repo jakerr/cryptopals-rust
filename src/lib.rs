@@ -1,3 +1,5 @@
+extern crate openssl;
+
 pub mod conversions;
 pub mod combine;
 pub mod crack;
