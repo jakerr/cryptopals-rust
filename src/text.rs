@@ -80,6 +80,12 @@ impl CharFreq {
         }
         diff
     }
+
+    pub fn dist_from_string(&self, s: &str) -> f32 {
+        let mut other = CharFreq::new();
+        other.count_all(s);
+        self.dist(&other)
+    }
 }
 
 #[test]
@@ -120,32 +126,14 @@ fn test_english() {
     assert!(text.dist(&en) < (gibberish.dist(&en) - 0.5 /* much closer in other words */));
 }
 
+
 // Crypto pals: http://cryptopals.com/sets/1/challenges/3/
 #[test]
 fn test_single_byte_xor_cipher() {
     use conversions::string_to_hex;
-    use combine::xor_byte;
+    use crack::find_xor_key;
 
-    let en = CharFreq::for_english();
-
-    let s = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736".to_string();
-    let mut c = CharFreq::new();
-    c.count_all(&s);
-
-    // xor, distance from en, string
-    let mut best = (0x0, c.dist(&en), s.clone());
-
-    let bytes = string_to_hex(&s);
-    for b in 0x00..0xff {
-        let s = String::from_utf8(xor_byte(&bytes, b)).unwrap_or("".to_string());
-        if s.len() > 0 {
-            let mut c = CharFreq::new();
-            c.count_all(&s);
-            let d = c.dist(&en);
-            if d < best.1 {
-                best = (b, d, s.clone());
-            }
-        }
-    }
-    assert_eq!(best.0, 88); // As not to give the solution away, just check we found the right xor.
+    let s = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
+    let bytes = string_to_hex(s);
+    assert_eq!(find_xor_key(&bytes), 88); // As not to give the solution away, just check we found the right xor.
 }
