@@ -6,7 +6,7 @@ fn hex_to_char(short: u8) -> char {
     match short {
         0x0...0x9 => (short + '0' as u8) as char,
         0xa...0xf => (short - 0xa + 'a' as u8) as char,
-        _ => panic!("hex_to_char only converts short values between 0x0 and 0xf")
+        _ => panic!("hex_to_char only converts short values between 0x0 and 0xf"),
     }
 }
 
@@ -15,17 +15,19 @@ fn char_to_hex(c: char) -> u8 {
     match c {
         '0'...'9' => (c as u8 - '0' as u8),
         'a'...'f' => 10 + (c as u8 - 'a' as u8),
-        _ => panic!("char_to_hex only converts char values between '0' and 'f'")
+        _ => panic!("char_to_hex only converts char values between '0' and 'f'"),
     }
 }
 
 // Takes a slice of bytes and converts to a hex string composed of '0'...'9','a'...'f' characters.
 pub fn hex_to_string(hex: &[u8]) -> String {
-    let byte_strings: Vec<String> = hex.iter().map(|x| {
-        let h = (x & 0xF0) >> 4;
-        let l = x & 0x0F;
-        format!("{}{}", hex_to_char(h), hex_to_char(l))
-    }).collect();
+    let byte_strings: Vec<String> = hex.iter()
+                                       .map(|x| {
+                                           let h = (x & 0xF0) >> 4;
+                                           let l = x & 0x0F;
+                                           format!("{}{}", hex_to_char(h), hex_to_char(l))
+                                       })
+                                       .collect();
     byte_strings.connect("")
 }
 
@@ -41,9 +43,10 @@ pub fn string_to_hex(string: &str) -> Vec<u8> {
                 let l = char_to_hex(l);
                 let byte = (h << 4) | l;
                 v.push(byte);
-            },
-            (Some(_), None) => panic!("Strings need pairs (even numbers) of characters to be considered valid hex."),
-            _ => break
+            }
+            (Some(_), None) => panic!("Strings need pairs (even numbers) of characters to be \
+                                       considered valid hex."),
+            _ => break,
         }
     }
     v
@@ -52,7 +55,7 @@ pub fn string_to_hex(string: &str) -> Vec<u8> {
 // Wrapper arround hex bytes that allows returning n-bits at a time (stride).
 // stride must be less than or equal to 8.
 struct Bits<'a> {
-    hex:&'a [u8],
+    hex: &'a [u8],
     idx: usize,
     bidx: usize,
     stride: usize,
@@ -61,17 +64,16 @@ struct Bits<'a> {
 impl <'a>Bits<'a> {
     fn new(wrap: &'a [u8], stride: usize) -> Bits<'a> {
         assert!(stride <= 8);
-        Bits {
-            hex: wrap,
-            idx: 0,
-            bidx: 0,
-            stride: stride
-        }
+        Bits { hex: wrap, idx: 0, bidx: 0, stride: stride }
     }
 
     fn bite(&mut self, bits: usize) -> (usize, u8) {
         let remain = 8 - self.bidx;
-        let ignore = if remain > bits { remain - bits } else { 0 };
+        let ignore = if remain > bits {
+            remain - bits
+        } else {
+            0
+        };
         let read = remain - ignore;
 
         let mut byte;
@@ -137,10 +139,16 @@ pub fn hex_to_base64(hex: &[u8]) -> String {
             (Some(h1), Some(h2), m, l) => {
                 s.push(BASE_64[h1 as usize]);
                 s.push(BASE_64[h2 as usize]);
-                match m { Some(m) => s.push(BASE_64[m as usize]), _ => s.push('=') };
-                match l { Some(l) => s.push(BASE_64[l as usize]), _ => s.push('=') };
-            },
-            _ => unreachable!()
+                match m {
+                    Some(m) => s.push(BASE_64[m as usize]),
+                    _ => s.push('='),
+                };
+                match l {
+                    Some(l) => s.push(BASE_64[l as usize]),
+                    _ => s.push('='),
+                };
+            }
+            _ => unreachable!(),
         }
     }
     s
@@ -171,18 +179,18 @@ pub fn base64_to_hex(string: String) -> Vec<u8> {
                         m |= c >> 2;
                         l = c << 6;
                         v.push(m)
-                    },
-                    _ => ()
+                    }
+                    _ => (),
                 }
                 match base64_inverse(d) {
                     Some(d) => {
                         l |= d;
                         v.push(l)
-                    },
-                    _ => ()
+                    }
+                    _ => (),
                 }
-            },
-            _ => panic!("Invalid base64. Inproperly padded.")
+            }
+            _ => panic!("Invalid base64. Inproperly padded."),
         }
     }
     v
@@ -225,21 +233,25 @@ fn test_base64() {
     assert_eq!(base64_to_hex(s), b);
 
     let b = "Man is distinguished, not only by his reason, but by this singular passion from \
-        other animals, which is a lust of the mind, that by a perseverance of delight \
-        in the continued and indefatigable generation of knowledge, exceeds the short \
-        vehemence of any carnal pleasure.".as_bytes();
+             other animals, which is a lust of the mind, that by a perseverance of delight in the \
+             continued and indefatigable generation of knowledge, exceeds the short vehemence of \
+             any carnal pleasure."
+                .as_bytes();
 
-    let s = "TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlz\
-    IHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2Yg\
-    dGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGlu\
-    dWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRo\
-    ZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=".to_string();
+    let s = "TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlzIHNpbmd1b\
+             GFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2YgdGhlIG1pbmQsIHRoYX\
+             QgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGludWVkIGFuZCBpbmRlZmF0aWdhYmx\
+             lIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNh\
+             cm5hbCBwbGVhc3VyZS4="
+                .to_string();
 
     assert_eq!(hex_to_base64(&b), s);
-    assert_eq!(String::from_utf8(base64_to_hex(s)).unwrap(), String::from_utf8(b.to_owned()).unwrap());
+    assert_eq!(String::from_utf8(base64_to_hex(s)).unwrap(),
+               String::from_utf8(b.to_owned()).unwrap());
 
     // Crypto pals: http://cryptopals.com/sets/1/challenges/1/
-    let b = string_to_hex("49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d");
+    let b = string_to_hex("49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f\
+                           6e6f7573206d757368726f6f6d");
     let s = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t".to_string();
     assert_eq!(hex_to_base64(&b), s);
     assert_eq!(base64_to_hex(s), b);

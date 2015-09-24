@@ -8,7 +8,6 @@ fn test_detect_single_character_xor() {
 
     let en = CharFreq::for_english();
     let mut found = None;
-    'out:
     for line in content.lines() {
         let mut best = 1000.0;
         for b in 0x00..0xff {
@@ -24,7 +23,9 @@ fn test_detect_single_character_xor() {
                 }
             }
         }
-        if found.is_some() { break };
+        if found.is_some() {
+            break
+        };
     }
     assert_eq!(found, Some("Now that the party is jumping\n".to_string()));
 }

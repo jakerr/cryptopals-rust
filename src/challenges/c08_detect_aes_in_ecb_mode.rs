@@ -3,7 +3,10 @@ fn test_can_find_aes_ecb_cipher() {
     use conversions::string_to_hex;
     use std::collections::HashMap;
 
-    let ciphers: Vec<Vec<u8>> = include_str!("data/8.txt").lines().map(|x| string_to_hex(x)).collect();
+    let ciphers: Vec<Vec<u8>> = include_str!("data/8.txt")
+                                    .lines()
+                                    .map(|x| string_to_hex(x))
+                                    .collect();
 
     let mut dupeidx = vec!();
     for cipher in ciphers.iter() {

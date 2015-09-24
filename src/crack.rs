@@ -30,8 +30,7 @@ pub fn find_repeated_xor_key(m: &[u8], key_size: usize) -> Vec<u8> {
         for (i, b) in chunk.iter().enumerate() {
             if blocks.len() <= i {
                 blocks.push(vec!(*b));
-            }
-            else if let Some(block) = blocks.get_mut(i) {
+            } else if let Some(block) = blocks.get_mut(i) {
                 block.push(*b)
             }
         }
