@@ -1,22 +1,13 @@
-extern crate cryptopals;
+// Crypto pals: http://cryptopals.com/sets/1/challenges/5/
 
-#[cfg(not(test))]
-fn main() {
-    use std::env;
-    use std::io::{stdin, stdout, Read, Write};
-    use cryptopals::conversions::hex_to_string;
+#[test]
+fn test_repeating_key_xor() {
+    use conversions::hex_to_string;
+    use combine::xor_each;
 
-    let args: Vec<_> = env::args().collect();
-    if args.len() != 2 {
-        panic!("Requires one argument which is the key with which to do repeating key xor \
-                over stdin's bytes");
-    }
-    let key = args.get(1).unwrap().bytes().cycle();
-    let stdin = stdin().bytes().map(|b| b.unwrap());
-    let mut stdout = stdout();
-    for (a, b) in stdin.zip(key) {
-        if a == 10 { continue } // Line feed
-        write!(&mut stdout, "{}", hex_to_string(&[a ^ b])).unwrap();
-    }
-    write!(&mut stdout, "\n").unwrap();
+    let x = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
+    let key = "ICE";
+    let expected = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272\
+                    a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f";
+    assert_eq!(expected, hex_to_string(&xor_each(x.as_bytes(), key.as_bytes())))
 }
