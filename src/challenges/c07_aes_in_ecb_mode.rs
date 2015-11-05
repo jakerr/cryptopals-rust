@@ -5,7 +5,7 @@ fn test_can_decrypt() {
 
     const KEY: &'static str = "YELLOW SUBMARINE";
     let cipherlines: Vec<&str> = include_str!("data/7.txt").lines().collect();
-    let ciphertext: String = cipherlines.connect("");
+    let ciphertext: String = cipherlines.join("");
     let cipher = base64_to_hex(ciphertext);
     println!("Decoding {} char cipher", cipher.len());
 

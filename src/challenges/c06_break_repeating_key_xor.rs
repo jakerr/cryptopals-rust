@@ -8,7 +8,7 @@ fn test_break_reapeating_key_xor() {
 
     let en = CharFreq::for_english();
     let cipherlines: Vec<&str> = include_str!("data/6.txt").lines().collect();
-    let ciphertext: String = cipherlines.connect("");
+    let ciphertext: String = cipherlines.join("");
     let cipher = base64_to_hex(ciphertext);
     let guesses = guess_key_size(&cipher);
 

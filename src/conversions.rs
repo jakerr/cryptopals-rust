@@ -28,7 +28,7 @@ pub fn hex_to_string(hex: &[u8]) -> String {
                                            format!("{}{}", hex_to_char(h), hex_to_char(l))
                                        })
                                        .collect();
-    byte_strings.connect("")
+    byte_strings.join("")
 }
 
 // Takes a string with only '0'...'9','a'...'f' characters in it and converts to the represented vector of bytes.
@@ -76,7 +76,7 @@ impl <'a>Bits<'a> {
         };
         let read = remain - ignore;
 
-        let mut byte;
+        let byte;
         if let Some(b) = self.hex.get(self.idx) {
             byte = (b << self.bidx) >> (self.bidx + ignore);
         } else {
